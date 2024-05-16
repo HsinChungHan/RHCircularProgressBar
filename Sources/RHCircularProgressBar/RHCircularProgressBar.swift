@@ -32,6 +32,18 @@ public protocol RHCircularProgressBarDelegate: AnyObject {
     func progressBar(_ progressBar: RHCircularProgressBar, completionRateWillUpdate rate: Int, currentBarProgress value: Float)
     func progressBar(_ progressBar: RHCircularProgressBar, isDonetoValue: Bool, currentBarProgress value: Float)
 }
+// MARK: - Layout
+private extension RHCircularProgressBar {
+    func makeCircularPath() -> UIBezierPath {
+        // 計算繪製路徑時需要考慮到線寬的內縮距離
+        let insetBounds = bounds.insetBy(dx: viewModel.strokeWidth / 2, dy: viewModel.strokeWidth / 2)
+        let center = CGPoint(x: insetBounds.midX, y: insetBounds.midY)
+        let radius = min(insetBounds.width, insetBounds.height) / 2
+        
+        let circlePath = UIBezierPath(arcCenter: center, radius: radius, startAngle: viewModel.startAngle, endAngle: viewModel.endAngle, clockwise: true)
+        return circlePath
+    }
+}
 // MARK: - Factory Methods
 private extension RHCircularProgressBar {
     func makeTrackLayer() -> CAShapeLayer {

@@ -100,6 +100,15 @@ class ViewController: UIViewController, RHCircularProgressBarDelegate {
 }
 ```
 
+## Demo App
+
+You can click [here](https://github.com/HsinChungHan/RHCircularProgressBarDemoApp.git) to refer to the Demo App 🙌 🙌 🙌
+
+I demonstrated how to use `RHCircularProgressBar` in a `UICollectionView` to pause and resume animations.
+
+Please refer to the above steps for the basic setup and customize and extend according to your specific needs.
+
+Wishing you a smooth development process with RHStackCard 🥳 🥳 🥳
 
 
 

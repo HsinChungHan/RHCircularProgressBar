@@ -32,6 +32,62 @@ public protocol RHCircularProgressBarDelegate: AnyObject {
     func progressBar(_ progressBar: RHCircularProgressBar, completionRateWillUpdate rate: Int, currentBarProgress value: Float)
     func progressBar(_ progressBar: RHCircularProgressBar, isDonetoValue: Bool, currentBarProgress value: Float)
 }
+// MARK: - Factory Methods
+private extension RHCircularProgressBar {
+    func makeTrackLayer() -> CAShapeLayer {
+        let trackLayer = CAShapeLayer()
+        trackLayer.path = circularPath.cgPath
+        trackLayer.lineCap = .round
+        trackLayer.fillColor = UIColor.clear.cgColor
+        trackLayer.strokeColor = Color.Neutral.v800.withAlphaComponent(0.7).cgColor
+        trackLayer.lineWidth = viewModel.strokeWidth
+        trackLayer.strokeEnd = 1.0
+        return trackLayer
+    }
+    
+    func makeProgressLayer() -> CAShapeLayer {
+        let progressLayer = CAShapeLayer()
+        progressLayer.lineCap = .round
+        progressLayer.path = circularPath.cgPath
+        progressLayer.fillColor = UIColor.clear.cgColor
+        progressLayer.strokeColor = viewModel.progressLayerCGColor
+        progressLayer.lineWidth = viewModel.strokeWidth
+        progressLayer.strokeStart = 0.0
+        progressLayer.strokeEnd = CGFloat(viewModel.toValue)
+        return progressLayer
+    }
+    
+    func makeProgressLabel() -> UILabel {
+        let label = UILabel()
+        label.font = .boldSystemFont(ofSize: 22)
+        label.textColor = .white
+        return label
+    }
+    
+    func makeGradientLayer() -> CAGradientLayer {
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = bounds
+        gradientLayer.colors = makeShadeVariants(of: viewModel.progressLayerColor)
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 1, y: 1.0)
+        return gradientLayer
+    }
+    
+    func makeShadeVariants(of color: UIColor) -> [CGColor] {
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+
+        if color.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
+            let lighterColor = UIColor(hue: hue, saturation: saturation, brightness: min(brightness * 2.0, 1.0), alpha: alpha)
+            let originalColor = color
+            let darkerColor = UIColor(hue: hue, saturation: saturation, brightness: brightness * 0.2, alpha: alpha)
+            return [darkerColor.cgColor, originalColor.cgColor, lighterColor.cgColor]
+        }
+        return []
+    }
+}
 // MARK: - Helpers
 private extension RHCircularProgressBar {
     func startDisplayLink() {

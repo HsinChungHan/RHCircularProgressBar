@@ -32,6 +32,62 @@ public protocol RHCircularProgressBarDelegate: AnyObject {
     func progressBar(_ progressBar: RHCircularProgressBar, completionRateWillUpdate rate: Int, currentBarProgress value: Float)
     func progressBar(_ progressBar: RHCircularProgressBar, isDonetoValue: Bool, currentBarProgress value: Float)
 }
+// MARK: - Internal Methods
+public extension RHCircularProgressBar {
+    func configureProgressBar(with color: UIColor) {
+        viewModel.setProgressLayerColor(withColor: color)
+        progressLayer.strokeColor = viewModel.progressLayerCGColor
+        gradientLayer.colors = makeShadeVariants(of: viewModel.progressLayerColor)
+    }
+    
+    func setProgressWithAnimation(duration: TimeInterval, value: Float) {
+        viewModel.setToValue(with: value)
+        progressLayer.strokeEnd = CGFloat(viewModel.toValue)
+        
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.delegate = self
+        animation.duration = duration
+        animation.fromValue = 0
+        animation.toValue = viewModel.toValue
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+        
+        animation.fillMode = .forwards
+        animation.isRemovedOnCompletion = false
+        progressLayer.add(animation, forKey: "animateprogress")
+    }
+    
+    func setProgressWithAnimationFromCurrentValue(duration: TimeInterval=0.1, from fromValue: Float? = nil, to toValue: Float) {
+        viewModel.setToValue(with: toValue)
+        progressLayer.strokeEnd = CGFloat(toValue)
+        
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.delegate = self
+        animation.duration = duration
+        animation.fromValue = fromValue ?? progressLayer.strokeEnd
+        animation.toValue = toValue
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+        animation.fillMode = .forwards
+        animation.isRemovedOnCompletion = false
+        progressLayer.add(animation, forKey: "animateprogress")
+    }
+    
+    func reset() {
+        // stop displayLink and animation
+        stopDisplayLink()
+        progressLayer.removeAllAnimations()
+        
+        // reset progressLayer
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        progressLayer.strokeEnd = 0.0
+        CATransaction.commit()
+        
+        // remove progressLayer and gradientLayer
+        progressLayer.removeFromSuperlayer()
+        gradientLayer.removeFromSuperlayer()
+        viewModel.setToValue(with: 0.0)
+    }
+}
 // MARK: - Layout
 private extension RHCircularProgressBar {
     func makeCircularPath() -> UIBezierPath {

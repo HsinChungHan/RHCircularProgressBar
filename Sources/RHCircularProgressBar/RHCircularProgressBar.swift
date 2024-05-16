@@ -32,3 +32,25 @@ public protocol RHCircularProgressBarDelegate: AnyObject {
     func progressBar(_ progressBar: RHCircularProgressBar, completionRateWillUpdate rate: Int, currentBarProgress value: Float)
     func progressBar(_ progressBar: RHCircularProgressBar, isDonetoValue: Bool, currentBarProgress value: Float)
 }
+// MARK: - Helpers
+private extension RHCircularProgressBar {
+    func startDisplayLink() {
+        // invalidate previous displayLink
+        displayLink?.invalidate()
+        displayLink = CADisplayLink(target: self, selector: #selector(updateProgressLabel))
+        displayLink?.add(to: .main, forMode: .default)
+    }
+
+    @objc func updateProgressLabel() {
+        let currentProgressValue = viewModel.getCurrentProgressLayerValue(withProgressLayer: progressLayer)
+        let completionRate = viewModel.getCompletionRate(withProgressLayer: progressLayer)
+        delegate?.progressBar(self, completionRateWillUpdate: completionRate, currentBarProgress: currentProgressValue)
+    }
+    
+    func stopDisplayLink() {
+        displayLink?.invalidate()
+        displayLink = nil
+        let currentProgressValue = viewModel.getCurrentProgressLayerValue(withProgressLayer: progressLayer)
+        delegate?.progressBar(self, isDonetoValue: currentProgressValue == viewModel.toValue, currentBarProgress: currentProgressValue)
+    }
+}

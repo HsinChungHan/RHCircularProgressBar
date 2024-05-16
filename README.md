@@ -1,6 +1,11 @@
-# RHCircularProgressBar
 
+<p align="center">
+  <img src="https://github.com/HsinChungHan/RHCircularProgressBar/assets/38360195/cabc91c5-9235-42a5-9c62-881391238b02" alt="Simulator Screenshot - iPhone 15 Pro" width="300"/>
+  <img src="https://github.com/HsinChungHan/RHCircularProgressBar/assets/38360195/848b7660-4cec-4316-953e-30c2b64aa59b" alt="RHProgressBar實錄影片" width="300"/>
+</p>
+# RHCircularProgressBar
 This repository contains the implementation of a circular progress bar for iOS, which can be customized and used in various projects.
+
 
 ## Features
 - Customizable start angle

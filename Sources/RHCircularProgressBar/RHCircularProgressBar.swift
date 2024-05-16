@@ -178,3 +178,16 @@ private extension RHCircularProgressBar {
         delegate?.progressBar(self, isDonetoValue: currentProgressValue == viewModel.toValue, currentBarProgress: currentProgressValue)
     }
 }
+
+// MARK: - CAAnimationDelegate
+extension RHCircularProgressBar: CAAnimationDelegate {
+    public func animationDidStart(_ anim: CAAnimation) {
+        startDisplayLink()
+    }
+    
+    public func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        stopDisplayLink()
+    }
+}
+
+

@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "rhuicomponent",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/HsinChungHan/RHUIComponent.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "6f668ff16f129087e5e9f2eceacbf46188fa63c7"
+      }
+    },
+    {
+      "identity" : "snapkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SnapKit/SnapKit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "f222cbdf325885926566172f6f5f06af95473158"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -32,6 +32,36 @@ public protocol RHCircularProgressBarDelegate: AnyObject {
     func progressBar(_ progressBar: RHCircularProgressBar, completionRateWillUpdate rate: Int, currentBarProgress value: Float)
     func progressBar(_ progressBar: RHCircularProgressBar, isDonetoValue: Bool, currentBarProgress value: Float)
 }
+
+public class RHCircularProgressBar: UIView {
+    public weak var delegate: RHCircularProgressBarDelegate?
+    
+    private lazy var progressLayer = makeProgressLayer()
+    private lazy var trackLayer = makeTrackLayer()
+    private lazy var gradientLayer = makeGradientLayer()
+    private lazy var circularPath = makeCircularPath()
+    private var displayLink: CADisplayLink?
+    
+    private let viewModel: RHCircularProgressBarViewModel
+    public init(atStartAngle startAngleType: StartAngleType = .twelveClock, forRounds rounds: CGFloat = 1.0, progressLayerColor: UIColor = Color.Red.v100, strokeWidth: CGFloat = 10.0) {
+        self.viewModel = .init(startAngleType: startAngleType, rounds: rounds, progressLayerColor: progressLayerColor, strokeWidth: strokeWidth)
+        super.init(frame: .zero)
+        backgroundColor = .clear
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.addSublayer(trackLayer)
+        layer.addSublayer(progressLayer)
+        gradientLayer.mask = progressLayer
+        layer.addSublayer(gradientLayer)
+    }
+}
+
 // MARK: - Internal Methods
 public extension RHCircularProgressBar {
     func configureProgressBar(with color: UIColor) {
@@ -88,6 +118,7 @@ public extension RHCircularProgressBar {
         viewModel.setToValue(with: 0.0)
     }
 }
+
 // MARK: - Layout
 private extension RHCircularProgressBar {
     func makeCircularPath() -> UIBezierPath {
@@ -100,6 +131,7 @@ private extension RHCircularProgressBar {
         return circlePath
     }
 }
+
 // MARK: - Factory Methods
 private extension RHCircularProgressBar {
     func makeTrackLayer() -> CAShapeLayer {
@@ -156,6 +188,7 @@ private extension RHCircularProgressBar {
         return []
     }
 }
+
 // MARK: - Helpers
 private extension RHCircularProgressBar {
     func startDisplayLink() {
